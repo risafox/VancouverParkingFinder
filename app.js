@@ -16,6 +16,8 @@ let currentTimeInfo = null;
 let activeFilter = null; // null = show all, or a color string for single-select
 let ticketMarkers = [];
 let showTickets = false;
+let zonesLayer = null;
+let showZones = false;
 
 // ─── Time Helpers ──────────────────────────────────────────────────────────
 function getTimeInfo(date = new Date()) {
@@ -163,6 +165,7 @@ function initMap() {
   L.control.zoom({ position: 'topright' }).addTo(map);
 
   loadAndRender();
+  loadZones();
   startClock();
   setupLocateButton();
   setupClosePanel();
@@ -295,6 +298,75 @@ function setupChips() {
       renderTickets();
     });
   }
+
+  // Zones chip: independent toggle
+  const zonesChip = document.querySelector('.chip[data-type="zones"]');
+  if (zonesChip) {
+    zonesChip.addEventListener('click', () => {
+      showZones = !showZones;
+      zonesChip.classList.toggle('active', showZones);
+      toggleZones();
+    });
+  }
+}
+
+// ─── Permit Zones ──────────────────────────────────────────────────────────
+
+const ZONE_STYLE = {
+  RPO:  { color: '#e65100', fillColor: '#ff6d00', fillOpacity: 0.15, weight: 1.5 },
+  RPP:  { color: '#1565c0', fillColor: '#1e88e5', fillOpacity: 0.15, weight: 1.5 },
+  VRPP: { color: '#6a1b9a', fillColor: '#ab47bc', fillOpacity: 0.15, weight: 1.5 },
+};
+
+const ZONE_LABEL = {
+  RPO:  'Resident Parking Only',
+  RPP:  'Residential Parking Permit',
+  VRPP: 'Vancouver Resident Parking Permit',
+};
+
+async function loadZones() {
+  try {
+    const res = await fetch('parking_zones.geojson');
+    const geojson = await res.json();
+    zonesLayer = L.geoJSON(geojson, {
+      style: f => ZONE_STYLE[f.properties.zone] || { color: '#888', fillOpacity: 0.1, weight: 1 },
+      onEachFeature: (f, layer) => {
+        const zone = f.properties.zone;
+        layer.on('click', e => {
+          L.DomEvent.stopPropagation(e);
+          showZonePanel(zone, e.latlng);
+        });
+      },
+    });
+  } catch (err) {
+    console.warn('Failed to load zones:', err);
+  }
+}
+
+function toggleZones() {
+  if (!zonesLayer) return;
+  if (showZones) {
+    zonesLayer.addTo(map);
+    zonesLayer.bringToBack();
+  } else {
+    zonesLayer.remove();
+  }
+}
+
+function showZonePanel(zone, latlng) {
+  const panel = document.getElementById('info-panel');
+  panel.dataset.tier = 'zone';
+  document.getElementById('panel-content').innerHTML = `
+    <div class="panel-header">
+      <span class="panel-meter-id">${ZONE_LABEL[zone] || zone}</span>
+    </div>
+    <div class="panel-sub">${zone === 'RPO'
+      ? 'Parking reserved for residents. No permits issued — obey posted signs.'
+      : 'A residential parking permit is required to park here during restricted hours.'
+    }</div>
+  `;
+  positionPanel(latlng);
+  panel.classList.remove('hidden');
 }
 
 // ─── Tickets ───────────────────────────────────────────────────────────────

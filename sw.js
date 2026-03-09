@@ -1,12 +1,13 @@
 'use strict';
 
-const CACHE_NAME = 'vpf-v3';
+const CACHE_NAME = 'vpf-v4';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/app.js',
   '/styles.css',
   '/manifest.json',
+  '/parking_zones.geojson',
 ];
 
 // Install: cache static assets

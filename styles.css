@@ -272,6 +272,7 @@ html, body, #app {
 #info-panel[data-tier="red"]    { border-top: 3px solid #ea4335; background: #fff8f8; }
 #info-panel[data-tier="grey"]   { border-top: 3px solid #9e9e9e; }
 #info-panel[data-tier="ticket"] { border-top: 3px solid #111; }
+#info-panel[data-tier="zone"]   { border-top: 3px solid #7b61ff; background: #f8f5ff; }
 
 /* ─── Desktop panel: float near marker ─────────────────────────────────── */
 @media (min-width: 768px) {
