@@ -21,8 +21,7 @@
       <div id="header-left">
         <span id="header-icon">P</span>
         <div id="header-text">
-          <div id="header-title">Where to Street Park Vancouver</div>
-          <div id="header-subtitle" class="muted">tap price to filter · tap tickets to see where people have gotten ticketed</div>
+          <div id="header-title">Where to Street Park<span class="desktop-only"> Vancouver</span></div>
         </div>
       </div>
       <div id="time-display"></div>
@@ -30,24 +29,33 @@
 
     <!-- Horizontal filter chips -->
     <div id="chips-bar">
-      <div class="chip active" data-type="price" data-color="green">
-        <span class="chip-dot green"></span> ≤$1.50/hr
+      <div id="price-chips">
+        <div class="chip active" data-type="price" data-color="green">
+          <span class="chip-dot green"></span> ≤$1.50/hr
+        </div>
+        <div class="chip active" data-type="price" data-color="yellow">
+          <span class="chip-dot yellow"></span> ≤$3.00/hr
+        </div>
+        <div class="chip active" data-type="price" data-color="red">
+          <span class="chip-dot red"></span> $3+/hr
+        </div>
       </div>
-      <div class="chip active" data-type="price" data-color="yellow">
-        <span class="chip-dot yellow"></span> ≤$3.00/hr
-      </div>
-      <div class="chip active" data-type="price" data-color="red">
-        <span class="chip-dot red"></span> $3+/hr
-      </div>
-      <div class="chip" data-type="ticket">
-        <span class="chip-dot" style="background:#111"></span> Tickets
-      </div>
-      <div class="chip" data-type="zones">
-        <span class="chip-dot" style="background:#7b61ff"></span> Permit Zones
+      <div id="extra-chips">
+        <div class="chip active" data-type="zones">
+          <span class="chip-dot" style="background:#7b61ff"></span> Permit Zones
+        </div>
+        <div class="chip" data-type="ticket">
+          <span class="chip-dot" style="background:#111"></span> Tickets
+        </div>
       </div>
     </div>
 
     <div id="map"></div>
+
+    <!-- Free parking notice (10pm–6am) -->
+    <div id="free-notice" class="hidden">
+      All metered parking is free 10pm–6am
+    </div>
 
     <!-- Locate button (floating) -->
     <button id="locate-btn" aria-label="Find my location">
@@ -57,6 +65,32 @@
         <line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/>
       </svg>
     </button>
+
+    <!-- Help button (floating) -->
+    <button id="help-btn" aria-label="Help">?</button>
+
+    <!-- Help panel -->
+    <div id="help-panel" class="hidden">
+      <button id="close-help">&#x2715;</button>
+      <div class="help-section">
+        <div class="help-section-title">Pricing</div>
+        <div class="help-row"><span class="help-dot" style="background:#34a853"></span><span><strong>≤$1.50/hr</strong> — cheapest metered spots</span></div>
+        <div class="help-row"><span class="help-dot" style="background:#fbbc04"></span><span><strong>≤$3.00/hr</strong> — mid-range</span></div>
+        <div class="help-row"><span class="help-dot" style="background:#ea4335"></span><span><strong>$3+/hr</strong> — most expensive</span></div>
+        <div class="help-note">All metered parking is free 10pm–6am daily. Tap a price chip to filter to that tier only; tap again to show all.</div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">Permit Zones</div>
+        <div class="help-row"><span class="help-dot" style="background:#e65100"></span><span><strong>RPO</strong> — Resident Parking Only. Reserved for residents with no permits issued — obey posted signs.</span></div>
+        <div class="help-row"><span class="help-dot" style="background:#1e88e5"></span><span><strong>RPP</strong> — Residential Parking Permit required during restricted hours.</span></div>
+        <div class="help-row"><span class="help-dot" style="background:#ab47bc"></span><span><strong>VRPP</strong> — Vancouver Resident Parking Permit, a citywide permit program.</span></div>
+      </div>
+      <div class="help-section">
+        <div class="help-section-title">Tickets</div>
+        <div class="help-row"><span class="help-dot" style="background:#111"></span><span>Top 25 hotspots where metered parking tickets were issued in 2025. Larger dot = more tickets at that location.</span></div>
+        <div class="help-note">Data from City of Vancouver open data. Tap a dot to see the infraction type.</div>
+      </div>
+    </div>
 
     <!-- Info panel -->
     <div id="info-panel" class="hidden">

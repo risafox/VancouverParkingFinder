@@ -15,9 +15,10 @@ let allMeters = [];
 let currentTimeInfo = null;
 let activeFilter = null; // null = show all, or a color string for single-select
 let ticketMarkers = [];
+let ticketMarkerMeta = []; // { marker, countRatio } for zoom-based resizing
 let showTickets = false;
 let zonesLayer = null;
-let showZones = false;
+let showZones = true;
 
 // ─── Time Helpers ──────────────────────────────────────────────────────────
 function getTimeInfo(date = new Date()) {
@@ -150,6 +151,12 @@ async function fetchAllMeters() {
   return meters;
 }
 
+// ─── Zoom-scaled radius ────────────────────────────────────────────────────
+// zoom 12 → ~2.5, zoom 14 → ~4.5, zoom 16 → ~6.5, zoom 18 → 8 (capped)
+function markerRadius() {
+  return Math.max(2.5, Math.min(8, map.getZoom() - 9.5));
+}
+
 // ─── Map ───────────────────────────────────────────────────────────────────
 function initMap() {
   map = L.map('map', { zoomControl: false }).setView(
@@ -169,7 +176,20 @@ function initMap() {
   startClock();
   setupLocateButton();
   setupClosePanel();
+  setupHelpPanel();
   setupChips();
+
+  map.on('click', () => {
+    document.getElementById('info-panel').classList.add('hidden');
+  });
+
+  map.on('zoomend', () => {
+    renderMarkers();
+    const r = markerRadius();
+    ticketMarkerMeta.forEach(({ marker, countRatio }) => {
+      marker.setRadius(r + Math.round(countRatio * 4));
+    });
+  });
 }
 
 async function loadAndRender() {
@@ -183,7 +203,6 @@ async function loadAndRender() {
 }
 
 function renderMarkers() {
-  // Clear existing markers
   markers.forEach(m => m.remove());
   markers = [];
 
@@ -199,17 +218,16 @@ function renderMarkers() {
     const hex = COLOR_HEX[status.color] || COLOR_HEX.grey;
 
     const marker = L.circleMarker([geo.lat, geo.lon], {
-      radius: 6,
+      radius: markerRadius(),
       fillColor: hex,
       fillOpacity: 0.9,
       color: '#ffffff',
       weight: 1.5,
     }).addTo(map);
 
-    marker.on('click', () => showPanel(meter, status, [geo.lat, geo.lon]));
+    marker.on('click', (e) => { L.DomEvent.stopPropagation(e); showPanel(meter, status, [geo.lat, geo.lon]); });
     markers.push(marker);
   });
-
 }
 
 // ─── Panel Positioning ─────────────────────────────────────────────────────
@@ -235,7 +253,7 @@ function positionPanel(latlng) {
 function showPanel(meter, status, latlng) {
   const street = meter.streetname || meter.street_name || meter.street || '';
   const label = street ? `Meter ${meter.meter_id} · ${street}` : `Meter ${meter.meter_id}`;
-  const payment = meter.credit_card === 'Yes' ? 'Credit card + coin' : `Coin · #${meter.mobile_payment_number || '–'}`;
+  const payment = meter.credit_card === 'Yes' ? 'Credit card + coin' : 'Coin';
   const hasLimit = status.limitWithExpiry && status.limitWithExpiry !== 'No restrictions' && status.limitWithExpiry !== 'Unknown';
   const sub = [hasLimit ? status.limitWithExpiry : null, payment].filter(Boolean).join(' · ');
 
@@ -338,6 +356,7 @@ async function loadZones() {
         });
       },
     });
+    if (showZones) toggleZones();
   } catch (err) {
     console.warn('Failed to load zones:', err);
   }
@@ -355,7 +374,7 @@ function toggleZones() {
 
 function showZonePanel(zone, latlng) {
   const panel = document.getElementById('info-panel');
-  panel.dataset.tier = 'zone';
+  panel.dataset.tier = `zone-${zone.toLowerCase()}`;
   document.getElementById('panel-content').innerHTML = `
     <div class="panel-header">
       <span class="panel-meter-id">${ZONE_LABEL[zone] || zone}</span>
@@ -433,6 +452,7 @@ let ticketsLoading = false;
 function renderTickets() {
   ticketMarkers.forEach(m => m.remove());
   ticketMarkers = [];
+  ticketMarkerMeta = [];
   if (!showTickets || ticketsLoading) return;
   doRenderTickets();
 }
@@ -470,8 +490,9 @@ async function doRenderTickets() {
       const geo = await geocodeBlockStreet(ticket.block, ticket.street);
       if (!geo || !showTickets) continue;
 
-      // Scale dot size 6–14 by relative frequency
-      const radius = 6 + Math.round((count / maxCount) * 8);
+      // Scale dot size by zoom + relative frequency
+      const countRatio = count / maxCount;
+      const radius = markerRadius() + Math.round(countRatio * 4);
 
       const latlng = [geo.lat, geo.lon];
       const m = L.circleMarker(latlng, {
@@ -481,8 +502,9 @@ async function doRenderTickets() {
         color: '#ffffff',
         weight: 1.5,
       }).addTo(map);
-      m.on('click', () => showTicketPanel({ ...ticket, count }, latlng));
+      m.on('click', (e) => { L.DomEvent.stopPropagation(e); showTicketPanel({ ...ticket, count }, latlng); });
       ticketMarkers.push(m);
+      ticketMarkerMeta.push({ marker: m, countRatio });
     }
   } catch (err) {
     console.warn('Failed to load tickets:', err);
@@ -497,14 +519,38 @@ function setupClosePanel() {
   });
 }
 
+function setupHelpPanel() {
+  const btn = document.getElementById('help-btn');
+  const panel = document.getElementById('help-panel');
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    panel.classList.toggle('hidden');
+    // close info panel if open
+    document.getElementById('info-panel').classList.add('hidden');
+  });
+
+  document.getElementById('close-help').addEventListener('click', (e) => {
+    e.stopPropagation();
+    panel.classList.add('hidden');
+  });
+
+  // Close on click outside
+  panel.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', () => panel.classList.add('hidden'));
+}
+
 // ─── Clock ─────────────────────────────────────────────────────────────────
 function startClock() {
   function tick() {
     const now = new Date();
     document.getElementById('time-display').textContent = `as of ${formatTimeDisplay(now)}`;
 
-    // Re-render markers when the hour or period changes
     const newInfo = getTimeInfo(now);
+    const isFree = !newInfo.isMetered;
+    document.getElementById('free-notice').classList.toggle('hidden', !isFree);
+
+    // Re-render markers when the hour or period changes
     if (currentTimeInfo && newInfo.period !== currentTimeInfo.period) {
       renderMarkers();
     } else {
@@ -529,7 +575,7 @@ function setupLocateButton() {
         map.setView(loc, 16);
 
         L.circleMarker(loc, {
-          radius: 9,
+          radius: 7,
           fillColor: '#1a73e8',
           fillOpacity: 1,
           color: '#ffffff',
