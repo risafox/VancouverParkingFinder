@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- Run this file in a browser, click the buttons to download icons, place them in /icons/ folder -->
+<html>
+<body>
+<canvas id="c192" width="192" height="192"></canvas>
+<canvas id="c512" width="512" height="512"></canvas>
+<br>
+<button onclick="download('c192','icon-192.png')">Download icon-192.png</button>
+<button onclick="download('c512','icon-512.png')">Download icon-512.png</button>
+<script>
+function drawIcon(id) {
+  const canvas = document.getElementById(id);
+  const size = canvas.width;
+  const ctx = canvas.getContext('2d');
+  const r = size / 2;
+  ctx.fillStyle = '#1a73e8';
+  ctx.beginPath();
+  ctx.arc(r, r, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'white';
+  ctx.font = `bold ${size * 0.45}px -apple-system, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('P', r, r + size * 0.03);
+}
+drawIcon('c192');
+drawIcon('c512');
+function download(id, filename) {
+  const a = document.createElement('a');
+  a.href = document.getElementById(id).toDataURL('image/png');
+  a.download = filename;
+  a.click();
+}
+</script>
+</body>
+</html>

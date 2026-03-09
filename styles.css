@@ -1,0 +1,290 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #f5f5f5;
+}
+
+/* ─── Floating Header Pill ─────────────────────────────────────────────── */
+#header {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 12px);
+  left: 12px;
+  right: 12px;
+  z-index: 1001;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+}
+
+#header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#header-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #1a73e8;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#header-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111;
+}
+
+#header-subtitle {
+  font-size: 11px;
+  color: #888;
+  margin-top: 1px;
+}
+
+#time-display {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a73e8;
+  background: #e8f0fe;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ─── Chips Bar ────────────────────────────────────────────────────────── */
+#chips-bar {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 72px);
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  display: flex;
+  gap: 8px;
+  padding: 0 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+#chips-bar::-webkit-scrollbar { display: none; }
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s, transform 0.1s;
+  background: #ffffff;
+  color: #333;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  border: 1.5px solid transparent;
+  opacity: 0.45;
+}
+
+.chip.active {
+  opacity: 1;
+  border-color: rgba(0,0,0,0.12);
+}
+
+.chip:active { transform: scale(0.95); }
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chip-dot.green  { background: #34a853; }
+.chip-dot.yellow { background: #fbbc04; }
+.chip-dot.red    { background: #ea4335; }
+.chip-dot.grey   { background: #9e9e9e; }
+
+/* ─── Map ──────────────────────────────────────────────────────────────── */
+#map {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-bottom { bottom: 8px; }
+
+/* Move zoom controls to right, clear of chips */
+.leaflet-top.leaflet-right {
+  top: calc(env(safe-area-inset-top, 0px) + 122px);
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+  color: #333 !important;
+  background: #fff !important;
+}
+
+.leaflet-control-zoom a:hover { background: #f5f5f5 !important; }
+
+/* ─── Locate Button ────────────────────────────────────────────────────── */
+#locate-btn {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 214px);
+  right: 10px;
+  z-index: 1001;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a73e8;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#locate-btn:active { background: #f0f0f0; }
+
+/* ─── Info Panel (compact card) ────────────────────────────────────────── */
+#info-panel {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  left: 12px;
+  right: 12px;
+  z-index: 1002;
+  background: white;
+  border-radius: 16px;
+  padding: 14px 16px;
+  padding-right: 44px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  transform: translateY(0);
+  transition: transform 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+#info-panel.hidden { transform: translateY(calc(100% + 24px)); }
+
+#close-panel {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #f2f2f2;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.panel-meter-id {
+  font-size: 12px;
+  color: #888;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-rate-big {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111;
+  white-space: nowrap;
+}
+
+.panel-ticket-tag {
+  font-size: 10px;
+  font-weight: 600;
+  background: #111;
+  color: white;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.panel-sub {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.panel-muted { color: #aaa; }
+
+/* ─── Panel tier tints ─────────────────────────────────────────────────── */
+#info-panel[data-tier="green"]  { border-top: 3px solid #34a853; background: #f6fdf7; }
+#info-panel[data-tier="yellow"] { border-top: 3px solid #fbbc04; background: #fffdf0; }
+#info-panel[data-tier="red"]    { border-top: 3px solid #ea4335; background: #fff8f8; }
+#info-panel[data-tier="grey"]   { border-top: 3px solid #9e9e9e; }
+#info-panel[data-tier="ticket"] { border-top: 3px solid #111; }
+
+/* ─── Desktop panel: float near marker ─────────────────────────────────── */
+@media (min-width: 768px) {
+  #info-panel[data-mode="desktop"] {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  #info-panel[data-mode="desktop"].hidden {
+    transform: scale(0.96) !important;
+    opacity: 0 !important;
+    pointer-events: none;
+  }
+  #info-panel[data-mode="desktop"]:not(.hidden) {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+  }
+}
