@@ -1,0 +1,112 @@
+[
+ {
+  "name": "EasyPark Lot 55 – Yaletown",
+  "operator": "EasyPark",
+  "address": "909 Mainland St",
+  "parking": "multi-storey",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information/lot-details/909-mainland-st",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 22 – Yaletown SkyTrain",
+  "operator": "EasyPark",
+  "address": "1180 Mainland St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 1 – Hornby",
+  "operator": "EasyPark",
+  "address": "535 Hornby St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 3 – Richards",
+  "operator": "EasyPark",
+  "address": "535 Richards St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 9 – Howe & Dunsmuir",
+  "operator": "EasyPark",
+  "address": "Howe St and Dunsmuir St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 19 – West Cordova",
+  "operator": "EasyPark",
+  "address": "900 W Cordova St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 179 – Seymour",
+  "operator": "EasyPark",
+  "address": "443 Seymour St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 97 – Hornby",
+  "operator": "EasyPark",
+  "address": "1290 Hornby St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "EasyPark Lot 16 – Quebec St",
+  "operator": "EasyPark",
+  "address": "1500 Quebec St",
+  "url": "https://www.easypark.ca/find-parking/locations-and-lot-information",
+  "verify": true
+ },
+ {
+  "name": "Thurlow Parkade",
+  "address": "1025 Dunsmuir St",
+  "parking": "multi-storey",
+  "verify": true
+ },
+ {
+  "name": "Parkwell Plaza",
+  "address": "777 Seymour St",
+  "verify": true
+ },
+ {
+  "name": "In&Out Parking – Pacific Blvd",
+  "operator": "In&Out Parking",
+  "address": "1233 Pacific Blvd",
+  "verify": true
+ },
+ {
+  "name": "Cordova Parkade",
+  "address": "151 W Cordova St",
+  "parking": "multi-storey",
+  "verify": true
+ },
+ {
+  "name": "Advanced Parking – Howe St (Lot 9167)",
+  "operator": "Advanced Parking",
+  "address": "980 Howe St",
+  "verify": true
+ },
+ {
+  "name": "Advanced Parking – Cambie St (Lot 175)",
+  "operator": "Advanced Parking",
+  "address": "1008 Cambie St",
+  "verify": true
+ },
+ {
+  "name": "Advanced Parking – Hornby St (Lot 9001)",
+  "operator": "Advanced Parking",
+  "address": "1128 Hornby St",
+  "verify": true
+ },
+ {
+  "name": "Thurlow St Lot 9170",
+  "address": "745 Thurlow St",
+  "verify": true
+ }
+]

@@ -1,0 +1,9 @@
+{
+  "name": "vancouver-parking-finder",
+  "private": true,
+  "description": "Static site; no build step. npm is only used to run tests.",
+  "scripts": {
+    "test": "node --test tests/core.test.js && python3 -I -m unittest discover -s tests -p 'test_*.py'",
+    "data": "python3 scripts/build_data.py"
+  }
+}

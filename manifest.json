@@ -1,8 +1,8 @@
 {
   "name": "Vancouver Parking Finder",
   "short_name": "Van Parking",
-  "description": "Find parking meters in Vancouver with real-time rate info",
-  "start_url": "/",
+  "description": "Find the cheapest street and lot parking near where you're going in Vancouver",
+  "start_url": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1a73e8",
@@ -20,5 +20,7 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "id": "./",
+  "scope": "./"
 }
